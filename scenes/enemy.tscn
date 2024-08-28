@@ -172,5 +172,11 @@ shape = SubResource("CircleShape2D_vdlr3")
 position = Vector2(0, -3)
 shape = SubResource("CircleShape2D_ihoww")
 
+[node name="DamageCooldownTimer" type="Timer" parent="."]
+wait_time = 0.5
+
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
+[connection signal="body_entered" from="EnemyHitbox" to="." method="_on_enemy_hitbox_body_entered"]
+[connection signal="body_exited" from="EnemyHitbox" to="." method="_on_enemy_hitbox_body_exited"]
+[connection signal="timeout" from="DamageCooldownTimer" to="." method="_on_damage_cooldown_timer_timeout"]

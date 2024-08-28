@@ -1,5 +1,6 @@
-[gd_scene load_steps=10 format=4 uid="uid://dch7bpt5gacm0"]
+[gd_scene load_steps=12 format=4 uid="uid://dch7bpt5gacm0"]
 
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_debkx"]
 [ext_resource type="Texture2D" uid="uid://ddow4hur5ynug" path="res://art/tilesets/plains.png" id="1_trtlc"]
 [ext_resource type="Texture2D" uid="uid://cga7rhb3idiw4" path="res://art/tilesets/grass.png" id="2_lijur"]
 [ext_resource type="Texture2D" uid="uid://b10i68ix1veac" path="res://art/objects/objects.png" id="3_fjjg8"]
@@ -63,7 +64,11 @@ sources/0 = SubResource("TileSetAtlasSource_nel20")
 sources/1 = SubResource("TileSetAtlasSource_d77m7")
 sources/2 = SubResource("TileSetAtlasSource_aks3q")
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uwt06"]
+size = Vector2(56, 46)
+
 [node name="World" type="Node2D"]
+script = ExtResource("1_debkx")
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = SubResource("TileSet_l6j4k")
@@ -92,3 +97,17 @@ position = Vector2(59, 72)
 
 [node name="Enemy" parent="." instance=ExtResource("5_ebci2")]
 position = Vector2(310, 140)
+
+[node name="Collissions" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Collissions"]
+polygon = PackedVector2Array(2, -1, 257, 2, 257, -48, 313, -48, 313, -1, 338, -1, 339, 31, 364, 33, 370, 47, 430, 50, 434, 33, 478, 34, 480, 238, -1, 241, 0, 5, -21, -4, -115, 233, 27, 290, 323, 303, 545, 280, 634, 121, 583, -18, 447, -157, 104, -129, -16, -63, -16, -27, -7, -1)
+
+[node name="cliff_side_transision" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="cliff_side_transision"]
+position = Vector2(285, -24)
+shape = SubResource("RectangleShape2D_uwt06")
+
+[connection signal="body_entered" from="cliff_side_transision" to="." method="_on_cliff_side_transision_body_entered"]
+[connection signal="body_exited" from="cliff_side_transision" to="." method="_on_cliff_side_transision_body_exited"]
