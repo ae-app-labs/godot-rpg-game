@@ -414,11 +414,12 @@ animations = [{
 }]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_1d3bi"]
-radius = 7.0
-height = 14.0
+radius = 9.0
+height = 18.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_8tv4f"]
-radius = 11.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dfmb8"]
+radius = 8.0
+height = 24.0
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 3
@@ -431,21 +432,23 @@ sprite_frames = SubResource("SpriteFrames_duyb0")
 animation = &"side_attack"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(0, -1)
 shape = SubResource("CapsuleShape2D_1d3bi")
 
 [node name="PlayerHitbox" type="Area2D" parent="."]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerHitbox"]
-position = Vector2(1, -4)
-shape = SubResource("CircleShape2D_8tv4f")
+position = Vector2(2, -5)
+shape = SubResource("CapsuleShape2D_dfmb8")
 
 [node name="AttackCooldownTimer" type="Timer" parent="."]
-wait_time = 0.5
+one_shot = true
 
 [node name="DealAttackTimer" type="Timer" parent="."]
 wait_time = 0.5
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="world_camera" type="Camera2D" parent="."]
 zoom = Vector2(3, 3)
 limit_left = 0
 limit_top = 0
@@ -455,6 +458,29 @@ limit_smoothed = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
 
+[node name="cliffside_camera" type="Camera2D" parent="."]
+position = Vector2(68, 0)
+zoom = Vector2(3, 3)
+limit_left = 0
+limit_top = 0
+limit_right = 370
+limit_bottom = 317
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+modulate = Color(1.92523e-06, 0.757362, 0.551673, 1)
+offset_left = -6.0
+offset_top = 4.0
+offset_right = 104.0
+offset_bottom = 31.0
+scale = Vector2(0.1, 0.1)
+show_percentage = false
+
+[node name="RegenTimer" type="Timer" parent="."]
+wait_time = 5.0
+autostart = true
+
 [connection signal="body_entered" from="PlayerHitbox" to="." method="_on_player_hitbox_body_entered"]
+[connection signal="body_exited" from="PlayerHitbox" to="." method="_on_player_hitbox_body_exited"]
 [connection signal="timeout" from="AttackCooldownTimer" to="." method="_on_attack_cooldown_timer_timeout"]
 [connection signal="timeout" from="DealAttackTimer" to="." method="_on_deal_attack_timer_timeout"]
+[connection signal="timeout" from="RegenTimer" to="." method="_on_regen_timer_timeout"]

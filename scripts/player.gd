@@ -4,7 +4,7 @@ const speed = 100
 var current_direction = "none"
 var enemy_in_attack_range = false
 var enemy_attack_cooldown = true
-var health = 160
+var health = 100
 var player_alive = true
 var attack_in_progress = false
 
@@ -15,6 +15,8 @@ func _physics_process(delta: float) -> void:
 	player_movement(delta)
 	enemy_attack()
 	attack()
+	current_camera()
+	update_health()
 	
 	if health <= 0:
 		player_alive = false
@@ -22,7 +24,7 @@ func _physics_process(delta: float) -> void:
 		print("Player died")
 		self.queue_free() 
 		# end screen
-	
+
 func player_movement(_delta: float):
 	if Input.is_action_pressed("ui_right"):
 		current_direction = "right"
@@ -50,7 +52,6 @@ func player_movement(_delta: float):
 		velocity.y = 0
 		
 	move_and_slide()
-
 
 func play_anim(movement):
 	var dir = current_direction
@@ -90,19 +91,24 @@ func player():
 
 func _on_player_hitbox_body_entered(body: Node2D) -> void:
 	if body.has_method("enemy"):
+		#print("== enemy entered player hitbox")
 		enemy_in_attack_range = true
 	
 func _on_player_hitbox_body_exited(body: Node2D) -> void:
 	if body.has_method("enemy"):
+		#print("== enemy exited player hitbox")
 		enemy_in_attack_range = false
 
 func enemy_attack():
 	if enemy_in_attack_range and enemy_attack_cooldown == true:
-		health -= 20
+		health -= 10
+		print("player health:", health)
 		enemy_attack_cooldown = false
 		$AttackCooldownTimer.start()
 	
 func _on_attack_cooldown_timer_timeout() -> void:
+	$AttackCooldownTimer.stop()
+	#print("timer timeout")
 	enemy_attack_cooldown = true
 
 func attack():
@@ -126,8 +132,29 @@ func attack():
 			$AnimatedSprite2D.play("back_attack")
 			$DealAttackTimer.start()
 
-
 func _on_deal_attack_timer_timeout() -> void:
 	$DealAttackTimer.stop()
 	global.player_current_attack = false
 	attack_in_progress = false
+	
+func current_camera():
+	if global.current_scene == "world":
+		$world_camera.enabled = true
+		$cliffside_camera.enabled = false
+	elif global.current_scene == "cliff_side":
+		$world_camera.enabled = false
+		$cliffside_camera.enabled = true
+		
+func update_health():
+	var healthbar = $HealthBar
+	healthbar.value = health
+	
+	if health >= 100:
+		health = 100
+		healthbar.visible = false
+	else:
+		healthbar.visible = true
+
+func _on_regen_timer_timeout() -> void:
+	if health < 100:
+		health += 20

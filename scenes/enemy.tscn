@@ -175,6 +175,15 @@ shape = SubResource("CircleShape2D_ihoww")
 [node name="DamageCooldownTimer" type="Timer" parent="."]
 wait_time = 0.5
 
+[node name="HealthBar" type="ProgressBar" parent="."]
+modulate = Color(1, 0.449504, 0.466361, 1)
+offset_left = -5.0
+offset_top = 3.0
+offset_right = 95.0
+offset_bottom = 30.0
+scale = Vector2(0.1, 0.1)
+show_percentage = false
+
 [connection signal="body_entered" from="DetectionArea" to="." method="_on_detection_area_body_entered"]
 [connection signal="body_exited" from="DetectionArea" to="." method="_on_detection_area_body_exited"]
 [connection signal="body_entered" from="EnemyHitbox" to="." method="_on_enemy_hitbox_body_entered"]
